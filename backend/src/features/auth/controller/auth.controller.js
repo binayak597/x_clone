@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import AuthRepository from "../repository/auth.repository.js";
 import AuthModel from '../model/auth.model.js';
 import generateTokenAndSetCookie from '../../../../utils/generateToken.js';
+import UserModel from '../model/user.schema.js';
 
 
 export default class AuthController{
@@ -25,13 +26,13 @@ export default class AuthController{
 
         //checking for username
 
-        const existingUser = await this.authRepository.findUserByUsername(userName);
+        const existingUser = await UserModel.findOne({userName});
 
         if(existingUser) return res.status(400).json({error: "username is already exist"});
 
         //checking for email
 
-        const existingEmail = await this.authRepository.findUserByEmail(email);
+        const existingEmail = await UserModel.findOne({email});
 
         if(existingEmail) return res.status(400).json({error: "email is already exist"});
        
@@ -70,11 +71,11 @@ export default class AuthController{
         try {
             const {userName, password} = req.body;
 
-            const isUser = await this.authRepository.findUserByUsername(userName);
+            const isUser = await UserModel.findOne({userName});
             
             //checking if user exist
             if(!isUser) return res.status(404).json({error: "incorrect credientials"});
-
+            
             //checking if password is correct
             const isCorrect = await bcrypt.compare(password, isUser.password);
 
@@ -115,7 +116,7 @@ export default class AuthController{
 
         try {
             const userId = req.userId;
-            const isUser = await this.authRepository.findUser(userId);
+            const isUser = await UserModel.findById(userId);
 
             if(!isUser) return res.status(404).json({error: "user is not found"});
 

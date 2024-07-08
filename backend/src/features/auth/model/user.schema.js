@@ -58,20 +58,25 @@ const userSchema = new mongoose.Schema({
         default: ""
     },
 
-    socialLinks: [
-        {
-            platform: {
-                type: String,
-                required: true,
-                default: ""
-            },
-            link: {
-                type: String,
-                required: true,
-                default: ""
-            }
-        }
-    ],
+    // socialLinks: [
+    //     {
+    //         platform: {
+    //             type: String,
+    //             required: true,
+    //             default: ""
+    //         },
+    //         link: {
+    //             type: String,
+    //             required: true,
+    //             default: ""
+    //         }
+    //     }
+    // ],
+
+    socialLink: {
+        type: String,
+        default: ""
+    },
 
     bio: {
         type: String,

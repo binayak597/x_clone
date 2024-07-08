@@ -19,32 +19,4 @@ export default class AuthRepository{
             else throw new ApplicationError("something went wrong", 500);
         }
     }
-
-    findUserByUsername = async (userName) => {
-
-        try {
-            return await UserModel.findOne({userName});
-        } catch (err) {
-            throw new ApplicationError("something went wrong", 500);
-        }
-    }
-
-    findUserByEmail = async (email) => {
-
-        try {
-            return await UserModel.findOne({email});
-        } catch (err) {
-            throw new ApplicationError("something went wrong" ,500);
-        }
-    }
-
-    findUser = async (id) => {
-
-        try {
-            return await UserModel.findById(id).select("-password");
-        } catch (error) {
-            throw new ApplicationError("something went wrong" ,500);
-        }
-    }
-
 }
