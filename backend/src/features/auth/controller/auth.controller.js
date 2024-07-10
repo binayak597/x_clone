@@ -116,7 +116,7 @@ export default class AuthController{
 
         try {
             const userId = req.userId;
-            const isUser = await UserModel.findById(userId);
+            const isUser = await UserModel.findById(userId).select("-password");
 
             if(!isUser) return res.status(404).json({error: "user is not found"});
 
