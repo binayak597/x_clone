@@ -107,7 +107,7 @@ export default class AuthController{
             return res.status(200).json({message: "Logout successfully"});
         } catch (err) {
             console.error("error in signout controller -> ", err.message);
-            return res.status(err.statusCode).json({error: err.message});
+            return res.status(500).json({error: err.message});
         }
 
     }
@@ -123,7 +123,7 @@ export default class AuthController{
             return res.status(200).json(isUser);
         } catch (err) {
             console.error("error in getme controller -> ", err.message);
-            return res.status(err.statusCode).json({error: err.message});
+            return res.status(500).json({error: err.message});
         }
     }
 }

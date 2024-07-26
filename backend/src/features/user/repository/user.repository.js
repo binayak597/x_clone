@@ -75,7 +75,7 @@ export default class UserRepository{
                 $match: {
                     _id: {
                         $ne: user._id
-                    }
+                    } 
                 }
             },
             {

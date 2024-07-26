@@ -24,7 +24,7 @@ export default class UserController{
 
         } catch (err) {
             console.error("error in getprofiledetails controller -> ", err.message);
-            return res.status(err.statusCode).json({error: err.message});
+            return res.status(500).json({error: err.message});
         }
     }
 
@@ -49,7 +49,7 @@ export default class UserController{
     followUnfollowUser = async (req, res) => {
 
         try {
-            //userId -> to whom loggedin user wants to follow
+            //userId -> to whom, loggedin user wants to follow
         const {userId} = req.params;
 
         const loggedInUserId = req.userId;
@@ -166,7 +166,7 @@ export default class UserController{
 
         } catch (err) {
             console.error("error in update user controller -> ", err.message);
-            return res.status(err.statusCode).json({error: err.message});
+            return res.status(500).json({error: err.message});
         }
     }
 }

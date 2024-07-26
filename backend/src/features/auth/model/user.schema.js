@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { platform, type } from "os";
 
 const userSchema = new mongoose.Schema({
 

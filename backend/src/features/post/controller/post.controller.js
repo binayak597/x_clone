@@ -58,7 +58,7 @@ export default class PostController{
             const isUser = await UserModel.findById(userId);
             if(!isUser) return res.status(404).json({error: "user is not found"});
 
-            if(isUser._id.toString() !== isPost.userId.toString()) return res.status(404).json({error: "you are not authorized to delete this post"});
+            if(isUser._id.toString() !== isPost.user.toString()) return res.status(404).json({error: "you are not authorized to delete this post"});
 
             if(isPost.postImg){
 
@@ -73,7 +73,7 @@ export default class PostController{
 
         } catch (err) {
             console.error("error in deletePost controller -> ", err.message);
-            return res.status(err.statusCode).json({error: err.message});
+            return res.status(500).json({error: err.message});
         }
     }
 
@@ -142,7 +142,7 @@ export default class PostController{
             
         } catch (err) {
             console.error("error in update Post controller -> ", err.message);
-            return res.status(err.statusCode).json({error: err.message});
+            return res.status(500).json({error: err.message});
         }
     }
 
