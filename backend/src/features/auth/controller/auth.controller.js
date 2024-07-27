@@ -14,7 +14,7 @@ export default class AuthController{
     signUp = async (req, res) => {
         
         try {
-            const {fullName, userName, email, password, confirmPassword} = req.body;
+            const {fullName, userName, email, password} = req.body;
 
         //checking for valid email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,11 +35,6 @@ export default class AuthController{
         const existingEmail = await UserModel.findOne({email});
 
         if(existingEmail) return res.status(400).json({error: "email is already exist"});
-       
-        // checking match result of password and confirmpassword 
-
-        if(password !== confirmPassword) return res.status(400).json({error: "password doesnot match"});
-
 
         //hash the password
 
@@ -49,7 +44,8 @@ export default class AuthController{
         const newUser = new AuthModel(fullName, userName, email, hashedPassword);
 
         const createdUser = await this.authRepository.signUp(newUser);
-
+        
+        generateTokenAndSetCookie(createdUser._id, createdUser.email, res);
         return res.status(201).send({
             _id: createdUser._id,
             fullName: createdUser.fullName,

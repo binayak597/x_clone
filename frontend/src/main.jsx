@@ -2,47 +2,29 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-import {RouterProvider, createBrowserRouter} from 'react-router-dom';
-import SignUpPage from './pages/auth/signup/SignUpPage.jsx';
-import SignInPage from './pages/auth/signin/SignInPage.jsx';
-import HomePage from './pages/home/HomePage.jsx';
-import NotificationPage from './pages/notification/Notification.jsx';
-import ProfilePage from './pages/profile/ProfilePage.jsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'react-hot-toast';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { BrowserRouter } from "react-router-dom";
 
+const queryClient = new QueryClient({
 
-
-const router = createBrowserRouter([
-
-  {
-    path: "/signup",
-    element: <SignUpPage />
-  },
-  {
-    path: "/signin",
-    element: <SignInPage />
-  },
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        index: true,
-        element: <HomePage />
-      },
-      {
-        path: "notifications",
-        element: <NotificationPage />
-      },
-      {
-        path: "profile/:username",
-        element: <ProfilePage />
-      }
-    ]
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    }
   }
-]);
+});
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-  <RouterProvider router={router} />
-  </React.StrictMode>,
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <App />
+        <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+      </QueryClientProvider>
+    </BrowserRouter>
+    <Toaster />
+    </React.StrictMode>,
 )
