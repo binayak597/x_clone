@@ -37,7 +37,8 @@ const app = express();
 //application level middlewares
 app.use(cors());
 app.use(cookieParser());
-app.use(express.json()); //to parse the JSON format data (from req.body)
+app.use(express.json({limit: '5mb'})); //to parse the JSON format data (from req.body)
+//limit shouldn't be very high to prevent DoS attack
 app.use(express.urlencoded({extended: true})); //parse the form data 
 
 

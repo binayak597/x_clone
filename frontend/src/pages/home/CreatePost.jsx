@@ -2,23 +2,25 @@ import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
+import { useQuery } from "@tanstack/react-query";
+import useCreatePost from "../../hooks/useCreatePost";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const CreatePost = () => {
+
+	const {authUserData: authUserData} = useQuery({queryKey: ["authUser"]});
+
+	const {mutate: createPostMutate, isPending, isError, error} = useCreatePost();
 	const [text, setText] = useState("");
 	const [img, setImg] = useState(null);
 
 	const imgRef = useRef(null);
 
-	const isPending = false;
-	const isError = false;
-
-	const data = {
-		profileImg: "/avatars/boy1.png",
-	};
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		alert("Post created successfully");
+		createPostMutate({text, img});
+		setText("");
+		setImg(null);
 	};
 
 	const handleImgChange = (e) => {
@@ -36,7 +38,7 @@ const CreatePost = () => {
 		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
 			<div className='avatar'>
 				<div className='w-8 rounded-full'>
-					<img src={data.profileImg || "/avatar-placeholder.png"} />
+					<img src={authUserData?.profileImg || "/avatar-placeholder.png"} />
 				</div>
 			</div>
 			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
@@ -69,10 +71,10 @@ const CreatePost = () => {
 					</div>
 					<input type='file' hidden ref={imgRef} onChange={handleImgChange} />
 					<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
-						{isPending ? "Posting..." : "Post"}
+						{isPending ? <LoadingSpinner size="sm" /> : "Post"}
 					</button>
 				</div>
-				{isError && <div className='text-red-500'>Something went wrong</div>}
+				{isError && <div className='text-red-500'>{error.message}</div>}
 			</form>
 		</div>
 	);
