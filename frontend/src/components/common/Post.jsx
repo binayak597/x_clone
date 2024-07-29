@@ -8,22 +8,28 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useDeletePost from "../../hooks/useDeletePost";
 import LoadingSpinner from "./LoadingSpinner";
+import useLikeUnlikePost from "../../hooks/useLikeUnlikePost";
+import useAddComment from "../../hooks/useAddComment";
+import { timeSincePost } from "../../utils/date";
 
 const Post = ({ post }) => {
 
 	const {data: authUserData} = useQuery({queryKey: ["authUser"]});
 
-	const {mutate: deletePostMutate, isPending} = useDeletePost(post._id);
+	const {mutate: deletePostMutate, isPending: isDeleting} = useDeletePost(post._id);
+
+	const {mutate: likeUnlikePostMutate, isPending: isLiking} = useLikeUnlikePost(post._id);
+
+	const {mutate: addCommentMutate, isPending: isCommenting} = useAddComment(post._id);
 
 	const [comment, setComment] = useState("");
 	const postOwner = post.user;
-	const isLiked = false;
+	const isLiked = post.likes.includes(authUserData._id);
 
 	const isMyPost = authUserData._id === post.user._id;
 
-	const formattedDate = "1h";
+	const formattedDate = timeSincePost(post.createdAt);
 
-	const isCommenting = false;
 
 	const handleDeletePost = () => {
 
@@ -32,9 +38,15 @@ const Post = ({ post }) => {
 
 	const handlePostComment = (e) => {
 		e.preventDefault();
+		if(isCommenting) return;
+		addCommentMutate(comment);
+		setComment("");
 	};
 
-	const handleLikePost = () => {};
+	const handleLikePost = () => {
+		if(isLiking) return;
+		likeUnlikePostMutate();
+	};
 
 	return (
 		<>
@@ -56,9 +68,9 @@ const Post = ({ post }) => {
 						</span>
 						{isMyPost && (
 							<span className='flex justify-end flex-1'>
-								{!isPending && (<FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />)}
+								{!isDeleting && (<FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />)}
 
-								{isPending && <LoadingSpinner size="sm" />}
+								{isDeleting && <LoadingSpinner size="sm" />}
 							</span>
 						)}
 					</div>
@@ -127,7 +139,7 @@ const Post = ({ post }) => {
 										/>
 										<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
 											{isCommenting ? (
-												<span className='loading loading-spinner loading-md'></span>
+												<LoadingSpinner size="sm" />
 											) : (
 												"Post"
 											)}
@@ -143,14 +155,16 @@ const Post = ({ post }) => {
 								<span className='text-sm text-slate-500 group-hover:text-green-500'>0</span>
 							</div>
 							<div className='flex gap-1 items-center group cursor-pointer' onClick={handleLikePost}>
-								{!isLiked && (
+								{!isLiked && !isLiking && (
 									<FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />
 								)}
-								{isLiked && <FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />}
+
+								{isLiking && <LoadingSpinner size="sm" />}
+								{isLiked && !isLiking && <FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />}
 
 								<span
-									className={`text-sm text-slate-500 group-hover:text-pink-500 ${
-										isLiked ? "text-pink-500" : ""
+									className={`text-sm group-hover:text-pink-500 ${
+										isLiked ? "text-pink-500" : "text-slate-500"
 									}`}
 								>
 									{post.likes.length}

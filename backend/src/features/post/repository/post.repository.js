@@ -33,9 +33,15 @@ export default class PostRepository{
                     comments: commentData
                 }
             },
-        {
-            returnDocument: 'after'
-        });
+            {
+                returnDocument: 'after'
+            }).populate({
+                path: "user",
+                select: "-password"
+            }).populate({
+                path: "comments.user",
+                select: "-password"
+            });
 
         return updatedPost;
 
@@ -53,11 +59,14 @@ export default class PostRepository{
 
                 //unlike the post
 
-                await Post.findByIdAndUpdate(post._id, {
+                const updatedPost = await Post.findByIdAndUpdate(post._id, {
 
                     $pull: {
                         likes: user._id
                     }
+                },
+                {
+                    returnDocument: 'after'
                 });
 
                 await UserModel.findByIdAndUpdate(user._id, {
@@ -67,16 +76,22 @@ export default class PostRepository{
                     }
                 });
 
-                return "Post unliked successfully";
+                // const updatedLikes = Post.likes.filter(userId => userId.toString() !== user._id.toString());
+
+                const updatedLikes = updatedPost.likes;
+                return updatedLikes;
             }else{
 
                 //like the post
 
-                await Post.findByIdAndUpdate(post._id, {
+                const updatedPost = await Post.findByIdAndUpdate(post._id, {
 
                     $push: {
                         likes: user._id
                     }
+                },
+                {
+                    returnDocument: 'after'
                 });
 
                 await UserModel.findByIdAndUpdate(user._id, {
@@ -94,7 +109,9 @@ export default class PostRepository{
                 });
 
                 await newNotification.save();
-                return "Post liked successfully";
+
+                const updatedLikes = updatedPost.likes;
+                return updatedLikes;
             }
         } catch (err) {
             throw new ApplicationError("something went wrong", 500);

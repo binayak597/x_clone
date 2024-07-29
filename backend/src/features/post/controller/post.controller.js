@@ -159,9 +159,9 @@ export default class PostController{
 
            if(!isPost) return res.status(404).json({error: "post is not found"});
         
-           const message = await this.postRepository.likeUnlikePost(isPost, isUser);
+           const updatedLikes = await this.postRepository.likeUnlikePost(isPost, isUser);
 
-           return res.status(200).json({message});
+           return res.status(200).json({updatedLikes});
 
         } catch (err) {
             console.error("error in likeUnlikePost controller -> ", err.message);
