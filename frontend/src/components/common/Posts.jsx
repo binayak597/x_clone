@@ -34,7 +34,7 @@ const Posts = ({feedType}) => {
 
 	return (
 		<>
-			{isLoading && isFetching && (
+			{(isLoading || isFetching) && (
 				<div className='flex flex-col justify-center'>
 					<PostSkeleton />
 					<PostSkeleton />
