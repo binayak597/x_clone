@@ -1,3 +1,5 @@
+//core modules
+import path from 'path';
 
 
 //external modules
@@ -42,6 +44,8 @@ app.use(express.json({limit: '5mb'})); //to parse the JSON format data (from req
 app.use(express.urlencoded({extended: true})); //parse the form data 
 
 
+const __dirname = path.resolve();
+
 //api gateway
 
 //requests related to auth routes
@@ -65,10 +69,6 @@ app.use("/api/posts", jwtAuth, postRoutes);
 //http://localhost:8080/api/notifications
 app.use("/api/notifications", jwtAuth, notificationRoutes);
 
-
-//default request
-app.get("/", (req, res) => res.send("welcome to server"));
-
 //handling error by implementing error handler middleware in application level
 
 app.use((err, req, res, next) => {
@@ -83,8 +83,16 @@ app.use((err, req, res, next) => {
     return res.status(500).json({error: "Internal Server Error, please try again later"});
 });
 
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+
+app.use("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+});
+
 // handling 404 requests
 app.use((req, res) => res.send("Api is not found"));
+
 
 
 const PORT = process.env.PORT || 5000;
