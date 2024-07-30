@@ -32,3 +32,22 @@ export function timeSincePost(timestamp) {
     }
 }
 
+
+export function formatDateSinceJoined(timestamp) {
+    // Create a Date object from the timestamp
+    const date = new Date(timestamp);
+  
+    // Define an array of month names
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+  
+    // Get the month name and year from the date
+    const monthName = months[date.getMonth()];
+    const year = date.getFullYear();
+  
+    // Return the formatted date string
+    return `Joined in ${monthName} ${year}`;
+  }
+

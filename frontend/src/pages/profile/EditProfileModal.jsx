@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useUpdateUserProfile from "../../hooks/useUpdateUserProfile";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
-const EditProfileModal = () => {
+const EditProfileModal = ({authUser}) => {
+
+	const {mutate: updateUserProfileMutate, isPending: isUpdating} = useUpdateUserProfile();
+
 	const [formData, setFormData] = useState({
 		fullName: "",
-		username: "",
+		userName: "",
 		email: "",
 		bio: "",
-		link: "",
+		socialLink: "",
 		newPassword: "",
 		currentPassword: "",
 	});
 
 	const handleInputChange = (e) => {
+		console.log(e.target.name, e.target.value);
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
+
+	useEffect(() => {
+		if(authUser) {
+
+			setFormData({
+				fullName: authUser.fullName,
+				userName: authUser.userName,
+				email: authUser.email,
+				bio: authUser.bio,
+				socialLink: authUser.socialLink,
+				newPassword: "",
+				currentPassword: "",
+			});
+		}
+	}, [authUser]);
 	return (
 		<>
 			<button
@@ -30,7 +51,7 @@ const EditProfileModal = () => {
 						className='flex flex-col gap-4'
 						onSubmit={(e) => {
 							e.preventDefault();
-							alert("Profile updated successfully");
+							updateUserProfileMutate(formData);
 						}}
 					>
 						<div className='flex flex-wrap gap-2'>
@@ -46,8 +67,9 @@ const EditProfileModal = () => {
 								type='text'
 								placeholder='Username'
 								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.username}
-								name='username'
+								value={formData.userName}
+								name='userName'
+								disabled={true}
 								onChange={handleInputChange}
 							/>
 						</div>
@@ -58,6 +80,7 @@ const EditProfileModal = () => {
 								className='flex-1 input border border-gray-700 rounded p-2 input-md'
 								value={formData.email}
 								name='email'
+								disabled={true}
 								onChange={handleInputChange}
 							/>
 							<textarea
@@ -88,13 +111,13 @@ const EditProfileModal = () => {
 						</div>
 						<input
 							type='text'
-							placeholder='Link'
+							placeholder='socialLink'
 							className='flex-1 input border border-gray-700 rounded p-2 input-md'
-							value={formData.link}
-							name='link'
+							value={formData.socialLink}
+							name='socialLink'
 							onChange={handleInputChange}
 						/>
-						<button className='btn btn-primary rounded-full btn-sm text-white'>Update</button>
+						<button className='btn btn-primary rounded-full btn-sm text-white'>{isUpdating ? <LoadingSpinner size = "sm" /> : "Update"}</button>
 					</form>
 				</div>
 				<form method='dialog' className='modal-backdrop'>

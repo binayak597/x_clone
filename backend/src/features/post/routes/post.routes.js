@@ -19,7 +19,7 @@ router.get("/following", (req, res) => {
     postController.getFollowingPosts(req, res);
 });
 
-router.get("/likes", (req, res) => {
+router.get("/likes/:id", (req, res) => {
     postController.getLikedPosts(req, res);
 });
 

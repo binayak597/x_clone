@@ -62,7 +62,7 @@ export default class PostController{
 
             if(isPost.postImg){
 
-                const imgId = postImg.split("/").pop().split(".")[0];
+                const imgId = isPost.postImg.split("/").pop().split(".")[0];
 
                 await cloudinary.uploader.destroy(imgId);
             }
@@ -191,7 +191,7 @@ export default class PostController{
     getLikedPosts = async (req, res) => {
 
         try {
-            const userId = req.userId;
+            const {id: userId} = req.params;
 
             const isUser = await UserModel.findById(userId);
             if(!isUser) return res.status(404).json({error: "user is not found"});

@@ -2,6 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 import UserModel from "../../auth/model/user.schema.js";
 import UserRepository from "../repository/user.repository.js";
+import bcrypt from 'bcryptjs';
 
 
 export default class UserController{
@@ -88,22 +89,22 @@ export default class UserController{
             if(!isUser) return res.status(404).json({error: "user is not found"});
 
 
-            if(userName){
-                //check if username is exist
-            const existingUsername = await UserModel.findOne({userName});
-            if(existingUsername) return res.status(400).json({error: "username is already exist"});
-            }
+            // if(userName){
+            //     //check if username is exist
+            // const existingUsername = await UserModel.findOne({userName});
+            // if(existingUsername) return res.status(400).json({error: "username is already exist"});
+            // }
 
-            if(email){
-                //checking for invalid email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if(!emailRegex.test(email)) return res.status(400).json({error: "invalid email format"});
+            // if(email){
+            //     //checking for invalid email format
+            // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // if(!emailRegex.test(email)) return res.status(400).json({error: "invalid email format"});
 
-            //check if email is exist
+            // //check if email is exist
 
-            const existingEmail = await UserModel.findOne({email});
-            if(existingEmail) return res.status(400).json({error: "email is already exist"});
-            }
+            // const existingEmail = await UserModel.findOne({email});
+            // if(existingEmail) return res.status(400).json({error: "email is already exist"});
+            // }
 
             
 
@@ -111,6 +112,9 @@ export default class UserController{
 
             if(currentPassword && newPassword){
 
+                if(currentPassword === newPassword) return res.status(400).json({error: "looks like you have already used this password, try new one!"});
+
+                
                 const isMatch = await bcrypt.compare(currentPassword, isUser.password);
 
                 if(!isMatch) return res.status(400).json({error: "current password is incorrect"});

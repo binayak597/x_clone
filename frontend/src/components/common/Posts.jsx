@@ -3,7 +3,7 @@ import PostSkeleton from "../skeletons/PostSkeleton";
 import useGetPosts from "../../hooks/useGetPosts";
 import { useEffect } from "react";
 
-const Posts = ({feedType}) => {
+const Posts = ({feedType, username, user}) => {
 
 	//get endpoint for network call
 	const getEndPoint = () => {
@@ -14,6 +14,10 @@ const Posts = ({feedType}) => {
 				return "/api/posts/all";
 			case "following":
 				return "/api/posts/following";
+			case "posts": 
+				return `/api/posts/user/${username}`;
+			case "likes":
+				return `/api/posts/likes/${user._id}`;
 			default: 
 				return "api/posts/all";
 		}
@@ -30,7 +34,7 @@ const Posts = ({feedType}) => {
 	useEffect(() => {
 
 		refetch();
-	}, [feedType, refetch]);
+	}, [feedType, refetch, username, user]);
 
 	return (
 		<>

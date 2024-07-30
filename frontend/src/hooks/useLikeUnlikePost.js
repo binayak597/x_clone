@@ -9,7 +9,7 @@ const useLikeUnlikePost = (postId) => {
         mutationFn: async () => {
 
             try {
-                const res = await fetch(`api/posts/like/${postId}`, {
+                const res = await fetch(`/api/posts/like/${postId}`, {
                     method :'POST'
                 });
 
