@@ -8,7 +8,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const CreatePost = () => {
 
-	const {authUserData: authUserData} = useQuery({queryKey: ["authUser"]});
+	const {data: authUserData} = useQuery({queryKey: ["authUser"]});
 
 	const {mutate: createPostMutate, isPending, isError, error} = useCreatePost();
 	const [text, setText] = useState("");
