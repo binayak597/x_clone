@@ -19,4 +19,6 @@ export default class AuthRepository{
             else throw new ApplicationError("something went wrong", 500);
         }
     }
+
+
 }

@@ -3,7 +3,7 @@ import AuthRepository from "../repository/auth.repository.js";
 import AuthModel from '../model/auth.model.js';
 import generateTokenAndSetCookie from '../../../../utils/generateToken.js';
 import UserModel from '../model/user.schema.js';
-
+import PostModel from '../../post/model/post.model.js';
 
 export default class AuthController{
 
@@ -122,4 +122,5 @@ export default class AuthController{
             return res.status(500).json({error: err.message});
         }
     }
+
 }
